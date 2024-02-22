@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { TextField, Button, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Checkbox, Typography, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import { Delete, Edit } from '@mui/icons-material';
+import { TextField, Button, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Delete, Edit, Star } from '@mui/icons-material';
 import './index.css'; // Import CSS file
 
 const TodoList = () => {
@@ -12,7 +12,7 @@ const TodoList = () => {
 
   const addTask = () => {
     if (newTask.trim() !== '') {
-      setTasks([...tasks, { id: Date.now(), text: newTask, completed: false }]);
+      setTasks([...tasks, { id: Date.now(), text: newTask, completed: false, priority: false }]);
       setNewTask('');
     }
   };
@@ -45,7 +45,23 @@ const TodoList = () => {
     setTasks(tasks.map(task => (task.id === taskId ? { ...task, completed: !task.completed } : task)));
   };
 
-  const completedTasksCount = tasks.filter(task => task.completed).length;
+  const toggleTaskPriority = (taskId) => {
+    const updatedTasks = tasks.map(task => {
+      if (task.id === taskId) {
+        return { ...task, priority: !task.priority };
+      }
+      return task;
+    });
+
+    // Reorder tasks to move the priority task to the top
+    const priorityTaskIndex = updatedTasks.findIndex(task => task.id === taskId && task.priority);
+    if (priorityTaskIndex !== -1) {
+      const priorityTask = updatedTasks.splice(priorityTaskIndex, 1)[0];
+      setTasks([priorityTask, ...updatedTasks]);
+    } else {
+      setTasks(updatedTasks);
+    }
+  };
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
@@ -82,11 +98,13 @@ const TodoList = () => {
               <IconButton edge="end" aria-label="delete" onClick={() => deleteTask(task.id)}>
                 <Delete />
               </IconButton>
+              <IconButton edge="end" aria-label="priority" onClick={() => toggleTaskPriority(task.id)}>
+                {task.priority ? <Star style={{ color: 'orange' }} /> : <Star />}
+              </IconButton>
             </ListItemSecondaryAction>
           </ListItem>
         ))}
       </List>
-      <footer className="todo-list-footer">Total Completed Tasks: {completedTasksCount}</footer>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit Task</DialogTitle>
         <DialogContent>

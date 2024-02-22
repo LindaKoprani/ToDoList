@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { TextField, Button, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@mui/material';
 import { Delete, Edit, Star } from '@mui/icons-material';
 import './index.css'; // Import CSS file
 
@@ -69,6 +69,8 @@ const TodoList = () => {
     }
   };
 
+  const completedTasksCount = tasks.filter(task => task.completed).length;
+
   return (
     <div className="todo-list-container" style={{ height: tasks.length === 0 ? '100vh' : 'auto' }}>
       <div className="todo-list-title">To do List</div>
@@ -105,6 +107,9 @@ const TodoList = () => {
           </ListItem>
         ))}
       </List>
+      <footer className="todo-list-footer">
+        <Typography>Total Completed Tasks: {completedTasksCount}</Typography>
+      </footer>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit Task</DialogTitle>
         <DialogContent>

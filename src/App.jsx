@@ -53,7 +53,6 @@ const TodoList = () => {
       return task;
     });
 
-    // Reorder tasks to move the priority task to the top
     const priorityTaskIndex = updatedTasks.findIndex(task => task.id === taskId && task.priority);
     if (priorityTaskIndex !== -1) {
       const priorityTask = updatedTasks.splice(priorityTaskIndex, 1)[0];
@@ -92,7 +91,15 @@ const TodoList = () => {
               checked={task.completed}
               onChange={() => toggleTaskCompletion(task.id)}
             />
-            <ListItemText primary={task.text} />
+            <ListItemText
+              primary={task.text}
+              primaryTypographyProps={{
+                component: 'div',
+                style: {
+                  fontWeight: task.priority ? 'bold' : 'normal',
+                },
+              }}
+            />
             <ListItemSecondaryAction>
               <IconButton edge="end" aria-label="edit" onClick={() => handleEditTask(task.id, task.text)}>
                 <Edit />
@@ -101,7 +108,7 @@ const TodoList = () => {
                 <Delete />
               </IconButton>
               <IconButton edge="end" aria-label="priority" onClick={() => toggleTaskPriority(task.id)}>
-                {task.priority ? <Star style={{ color: 'orange' }} /> : <Star />}
+                {task.priority ? <Star style={{ color: 'red' }} /> : <Star />}
               </IconButton>
             </ListItemSecondaryAction>
           </ListItem>
